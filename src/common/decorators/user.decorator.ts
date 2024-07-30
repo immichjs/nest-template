@@ -4,6 +4,6 @@ export const UserAuthenticated = createParamDecorator(
 	(data: string, ctx: ExecutionContext) => {
 		const request = ctx.switchToHttp().getRequest();
 
-		return request.user;
+		return request.user[data];
 	},
 );

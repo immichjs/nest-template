@@ -6,13 +6,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UserRepository {
 	@InjectRepository(User) private readonly _userRepo: Repository<User>;
 
-	public async create(dto: CreateUserDto): Promise<Omit<User, 'password'>> {
+	public async create(dto: CreateUserDto): Promise<User> {
 		const userAlreadyExists = await this._userRepo.findOne({
 			where: {
 				email: dto.email,
@@ -23,9 +24,7 @@ export class UserRepository {
 			throw new ConflictException('User already exists');
 		}
 
-		const { password, ...createdUser } = await this._userRepo.save(dto);
-
-		return createdUser;
+		return this._userRepo.save(dto);
 	}
 
 	public async findByEmail(email: string): Promise<User> {
@@ -33,7 +32,6 @@ export class UserRepository {
 			where: {
 				email,
 			},
-			select: ['id', 'name', 'email', 'password', 'createdAt', 'updatedAt'],
 		});
 
 		if (!user) {
@@ -43,7 +41,7 @@ export class UserRepository {
 		return user;
 	}
 
-	public async findById(id: string): Promise<Omit<User, 'password'>> {
+	public async findById(id: string): Promise<User> {
 		const user = await this._userRepo.findOne({
 			where: {
 				id,
@@ -55,5 +53,20 @@ export class UserRepository {
 		}
 
 		return user;
+	}
+
+	public async update(id: string, dto: UpdateUserDto): Promise<User> {
+		const hasUser = await this._userRepo.count({
+			where: {
+				id,
+			},
+		});
+
+		if (!hasUser) {
+			throw new NotFoundException('User not found');
+		}
+
+		await this._userRepo.update(id, dto);
+		return this._userRepo.findOne({ where: { id } });
 	}
 }
