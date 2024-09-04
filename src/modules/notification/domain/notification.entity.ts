@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import {
 	Column,
 	CreateDateColumn,
@@ -7,23 +6,19 @@ import {
 	UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('users')
-export class User {
+@Entity('notifications')
+export class Notification {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
-	@Column()
-	name: string;
+	@Column({ length: 64 })
+	title: string;
 
-	@Column({ unique: true })
-	email: string;
-
-	@Column({ length: 14 })
-	phone: string;
+	@Column({ length: 512 })
+	description: string;
 
 	@Column()
-	@Exclude({ toPlainOnly: true })
-	password: string;
+	redirect: string;
 
 	@CreateDateColumn({ name: 'created_at' })
 	createdAt: Date;

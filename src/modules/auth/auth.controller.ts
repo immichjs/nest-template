@@ -8,12 +8,12 @@ import { RefreshDto } from './dto/refresh.dto';
 export class AuthController {
 	@Inject() private readonly authService: AuthService;
 
-	@Post('sign-in')
+	@Post('signin')
 	async signIn(@Body() dto: SignInDto) {
 		return this.authService.signIn(dto);
 	}
 
-	@Post('sign-up')
+	@Post('signup')
 	async signUp(@Body() dto: SignUpDto) {
 		return this.authService.signUp(dto);
 	}

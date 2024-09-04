@@ -16,6 +16,9 @@ export class CreateUserDto {
 	readonly email: string;
 
 	@IsNotEmpty()
+	readonly phone: string;
+
+	@IsNotEmpty()
 	@MinLength(8, {
 		message: 'Password too short',
 	})

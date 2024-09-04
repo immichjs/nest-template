@@ -4,8 +4,8 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { User } from '../domain/user.entity';
+import { Not, Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
@@ -64,6 +64,19 @@ export class UserRepository {
 
 		if (!hasUser) {
 			throw new NotFoundException('User not found');
+		}
+
+		const hasUserByEmail = await this._userRepo.findOne({
+			where: {
+				id: Not(id),
+				email: dto.email,
+			},
+		});
+
+		if (hasUserByEmail) {
+			throw new ConflictException(
+				`User already exists with e-mail "${dto.email}"`,
+			);
 		}
 
 		await this._userRepo.update(id, dto);

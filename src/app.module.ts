@@ -13,6 +13,8 @@ import jwtConfig from './common/configs/jwt.config';
 
 import { validate } from './common/validations/env.validation';
 import { SharedModule } from './common/shared/shared.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { EmployeeModule } from './modules/employee/employee.module';
 
 @Module({
 	imports: [
@@ -26,6 +28,8 @@ import { SharedModule } from './common/shared/shared.module';
 		UserModule,
 		DatabaseModule,
 		SharedModule,
+		NotificationModule,
+		EmployeeModule,
 	],
 	controllers: [],
 	providers: [],
